@@ -1,0 +1,55 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class Paddle : MonoBehaviour
+{
+    public float paddleSpeed = 5f;
+    public float maxZ = 5f;
+    public Key upKey;
+    public Key downKey;
+
+    void Start()
+    {
+        
+    }
+
+    void Update()
+    {
+        if (Keyboard.current[upKey].isPressed)
+        {
+            Vector3 newPosition = transform.position + 
+                new Vector3(0f, 0f, paddleSpeed) * Time.deltaTime;
+
+            newPosition.z = Mathf.Clamp(newPosition.z, -maxZ, maxZ);
+            transform.position = newPosition;
+        }
+
+        if (Keyboard.current[downKey].isPressed)
+        {
+            Vector3 newPosition = transform.position - 
+                new Vector3(0f, 0f, paddleSpeed) * Time.deltaTime;
+
+            newPosition.z = Mathf.Clamp(newPosition.z, -maxZ, maxZ);
+            transform.position = newPosition;
+        }
+
+        float angle = 50f;
+
+        Vector3 up = Vector3.up;
+
+        Quaternion testRotation = Quaternion.Euler(60f, 0f, 0f);
+        Vector3 rotatedVector = testRotation * up;
+
+        Quaternion otherRotation = Quaternion.Euler(-60f, 0f, 0f);
+        Vector3 otherRotatedVector = otherRotation * up;
+
+        Quaternion someOtherAngleRotation = Quaternion.Euler(angle, 0f, 0f);
+        Vector3 someOtherRotatedVector = someOtherAngleRotation * up;
+
+        Debug.DrawRay(transform.position, rotatedVector * 5f, Color.red);
+        Debug.DrawRay(transform.position, otherRotatedVector * 5f, Color.blue);
+        Debug.DrawRay(transform.position, someOtherRotatedVector * 5f, Color.blue);
+    }
+}
