@@ -7,11 +7,11 @@ public class Ball : MonoBehaviour
     public float speed = 8f;
     public float acceleration = 0.75f;
     public float maxAngle = 60f;
-
-    public Transform spawnPoint;
+    public AudioClip hitSound;
 
     private Rigidbody rb;
     private float currentSpeed;
+    private AudioSource audioSource;
 
     void Awake()
     {
@@ -20,6 +20,7 @@ public class Ball : MonoBehaviour
         rb.freezeRotation = true;
 
         currentSpeed = speed;
+        audioSource = GetComponent<AudioSource>();
     }
 
     public void Reset(bool left)
@@ -37,6 +38,9 @@ public class Ball : MonoBehaviour
     {
         Paddle paddle = collision.collider.GetComponent<Paddle>();
         if (paddle == null) return;
+
+        audioSource.pitch = Random.Range(0.35f + speed / 10, .4f + speed / 10);
+        audioSource.PlayOneShot(hitSound);
 
         currentSpeed += acceleration;
 
