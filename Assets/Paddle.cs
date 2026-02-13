@@ -5,51 +5,37 @@ using UnityEngine.InputSystem;
 
 public class Paddle : MonoBehaviour
 {
-    public float paddleSpeed = 5f;
+    public float speed = 5f;
     public float maxZ = 5f;
     public Key upKey;
     public Key downKey;
+    public bool left = true;
 
-    void Start()
+    [Header("Input System")]
+    public InputActionReference moveAction;
+
+    void OnEnable()
     {
-        
+        if (moveAction != null)
+            moveAction.action.Enable();
+    }
+
+    void OnDisable()
+    {
+        if (moveAction != null)
+            moveAction.action.Disable();
     }
 
     void Update()
     {
-        if (Keyboard.current[upKey].isPressed)
-        {
-            Vector3 newPosition = transform.position + 
-                new Vector3(0f, 0f, paddleSpeed) * Time.deltaTime;
+        if (moveAction == null) return;
 
-            newPosition.z = Mathf.Clamp(newPosition.z, -maxZ, maxZ);
-            transform.position = newPosition;
-        }
+        float move = moveAction.action.ReadValue<float>();
 
-        if (Keyboard.current[downKey].isPressed)
-        {
-            Vector3 newPosition = transform.position - 
-                new Vector3(0f, 0f, paddleSpeed) * Time.deltaTime;
+        Vector3 newPosition = transform.position +
+            new Vector3(0f, 0f, move * speed) * Time.deltaTime;
 
-            newPosition.z = Mathf.Clamp(newPosition.z, -maxZ, maxZ);
-            transform.position = newPosition;
-        }
-
-        float angle = 50f;
-
-        Vector3 up = Vector3.up;
-
-        Quaternion testRotation = Quaternion.Euler(60f, 0f, 0f);
-        Vector3 rotatedVector = testRotation * up;
-
-        Quaternion otherRotation = Quaternion.Euler(-60f, 0f, 0f);
-        Vector3 otherRotatedVector = otherRotation * up;
-
-        Quaternion someOtherAngleRotation = Quaternion.Euler(angle, 0f, 0f);
-        Vector3 someOtherRotatedVector = someOtherAngleRotation * up;
-
-        Debug.DrawRay(transform.position, rotatedVector * 5f, Color.red);
-        Debug.DrawRay(transform.position, otherRotatedVector * 5f, Color.blue);
-        Debug.DrawRay(transform.position, someOtherRotatedVector * 5f, Color.blue);
+        newPosition.z = Mathf.Clamp(newPosition.z, -maxZ, maxZ);
+        transform.position = newPosition;
     }
 }
