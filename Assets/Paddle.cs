@@ -13,6 +13,7 @@ public class Paddle : MonoBehaviour
 
     [Header("Input System")]
     public InputActionReference moveAction;
+    private bool frozen = false;
 
     void OnEnable()
     {
@@ -28,7 +29,7 @@ public class Paddle : MonoBehaviour
 
     void Update()
     {
-        if (moveAction == null) return;
+        if (moveAction == null || frozen == true) return;
 
         float move = moveAction.action.ReadValue<float>();
 
@@ -37,5 +38,16 @@ public class Paddle : MonoBehaviour
 
         newPosition.z = Mathf.Clamp(newPosition.z, -maxZ, maxZ);
         transform.position = newPosition;
+    }
+
+    public void Freeze()
+    {
+        frozen = true;
+        Invoke(nameof(Unfreeze), 3);
+    }
+
+    void Unfreeze()
+    {
+        frozen = false;
     }
 }

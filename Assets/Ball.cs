@@ -5,13 +5,19 @@ using UnityEngine;
 public class Ball : MonoBehaviour
 {
     public float speed = 8f;
+    public float aimTime = 1.2f;
     public float acceleration = 0.75f;
     public float maxAngle = 60f;
     public AudioClip hitSound;
 
+    public Paddle lefty;
+    public Paddle righty;
+
     private Rigidbody rb;
     private float currentSpeed;
     private AudioSource audioSource;
+
+    private Paddle lastPaddle;
 
     void Awake()
     {
@@ -38,6 +44,7 @@ public class Ball : MonoBehaviour
     {
         Paddle paddle = collision.collider.GetComponent<Paddle>();
         if (paddle == null) return;
+        lastPaddle = paddle;
 
         audioSource.pitch = Random.Range(0.35f + speed / 10, .4f + speed / 10);
         audioSource.PlayOneShot(hitSound);
@@ -49,5 +56,22 @@ public class Ball : MonoBehaviour
 
         Vector3 dir = new Vector3(xDir, 0f, offset).normalized;
         rb.velocity = dir * currentSpeed;
+    }
+
+    public void Aim() {
+        rb.velocity = Vector3.zero;
+        // This is like the incredible book The Name of the Wind
+        Invoke(nameof(Fire), aimTime);
+    }
+
+    void Fire() {
+        audioSource.PlayOneShot(hitSound);
+        float offset = (lastPaddle.transform.position.z - transform.position.z) / 2f;
+        offset = Mathf.Clamp(offset, -1f, 1f);
+
+        float xDir = lastPaddle.left ? 1f : -1f;
+
+        Vector3 dir = new Vector3(xDir, 0f, offset).normalized;
+        rb.velocity = dir * 50f;
     }
 }

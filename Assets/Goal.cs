@@ -12,6 +12,6 @@ public class Goal : MonoBehaviour
         Ball ball = other.GetComponent<Ball>();
         if (ball == null) return;
 
-        gameManager.OnGoalScored(left);
+        gameManager.OnGoalScored();
     }
 }
