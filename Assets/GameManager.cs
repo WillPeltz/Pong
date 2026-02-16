@@ -28,16 +28,30 @@ public class GameManager : MonoBehaviour
         flavorText.text = "";
     }
 
-    public void OnGoalScored()
+    void RedUI() 
     {
+        scoreText.color = Color.red;
+        scoreText.fontSize = 50;
+        Invoke(nameof(WhiteUI), resetTime);
+    }
 
+    void WhiteUI()
+    {
+        scoreText.color = Color.white;
+        scoreText.fontSize = 36;
+    }
+
+    public void OnGoalScored(bool left2)
+    {   
+        RedUI();
+        left = left2;
         if (left) {
             rightScore++;
         }
         else {
             leftScore++;
         }
-
+        UpdateScoreUI();
         string scorer = left ? "Right" : "Left";
         Debug.Log($"{scorer} scores! Left: {leftScore} Right: {rightScore}");
 
@@ -48,6 +62,8 @@ public class GameManager : MonoBehaviour
 
             Debug.Log("Score reset. Left: 0 Right: 0");
             flavorText.text = "GOOOOOOOOOOOAAAAAAAAL";
+            leftScore = 0;
+            rightScore = 0;
             Invoke(nameof(Flavor2), resetTime);
         } else {
             flavorText.text = "GOOOOOOOOOOOAAAAAAAAL";
@@ -69,8 +85,7 @@ public class GameManager : MonoBehaviour
 
     void Flavor3() {
         flavorText.text = $"Resetting Score...";
-        leftScore = 0;
-        rightScore = 0;
+        UpdateScoreUI();
         Invoke(nameof(Flavor4), 1f);
     }
 
